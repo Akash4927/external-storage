@@ -84,6 +84,11 @@ func decodeV3Endpoints(modelDef modelDefinition, opts DecodeModelOptions) (Resol
 		custAddEC2Metadata(p)
 		custAddS3DualStack(p)
 		custRmIotDataService(p)
+<<<<<<< HEAD
+=======
+
+		custFixRuntimeSagemakerSigningName(p)
+>>>>>>> add code-generator dependency
 	}
 
 	return ps, nil
@@ -120,6 +125,26 @@ func custAddEC2Metadata(p *partition) {
 
 func custRmIotDataService(p *partition) {
 	delete(p.Services, "data.iot")
+}
+
+func custFixRuntimeSagemakerSigningName(p *partition) {
+	// Workaround for aws/aws-sdk-go#1836
+
+	s, ok := p.Services["runtime.sagemaker"]
+	if !ok {
+		return
+	}
+
+	if len(s.Defaults.CredentialScope.Service) != 0 {
+		fmt.Fprintf(os.Stderr, "runtime.sagemaker signing name already set, ignoring override.\n")
+		// If the value is already set don't override
+		return
+	}
+
+	s.Defaults.CredentialScope.Service = "sagemaker"
+	fmt.Fprintf(os.Stderr, "sagemaker signing name not set, overriding.\n")
+
+	p.Services["runtime.sagemaker"] = s
 }
 
 type decodeModelError struct {

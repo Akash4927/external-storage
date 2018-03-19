@@ -148,7 +148,10 @@ const (
 	S3ServiceID                           = "s3"                           // S3.
 	SagemakerServiceID                    = "sagemaker"                    // Sagemaker.
 	SdbServiceID                          = "sdb"                          // Sdb.
+<<<<<<< HEAD
 	SecretsmanagerServiceID               = "secretsmanager"               // Secretsmanager.
+=======
+>>>>>>> add code-generator dependency
 	ServerlessrepoServiceID               = "serverlessrepo"               // Serverlessrepo.
 	ServicecatalogServiceID               = "servicecatalog"               // Servicecatalog.
 	ServicediscoveryServiceID             = "servicediscovery"             // Servicediscovery.
@@ -446,7 +449,10 @@ var awsPartition = partition{
 			Endpoints: endpoints{
 				"ap-northeast-1": endpoint{},
 				"ap-northeast-2": endpoint{},
+<<<<<<< HEAD
 				"ap-south-1":     endpoint{},
+=======
+>>>>>>> add code-generator dependency
 				"ap-southeast-1": endpoint{},
 				"ap-southeast-2": endpoint{},
 				"ca-central-1":   endpoint{},
@@ -1300,7 +1306,10 @@ var awsPartition = partition{
 				"eu-central-1":   endpoint{},
 				"eu-west-1":      endpoint{},
 				"eu-west-2":      endpoint{},
+<<<<<<< HEAD
 				"eu-west-3":      endpoint{},
+=======
+>>>>>>> add code-generator dependency
 				"sa-east-1":      endpoint{},
 				"us-east-1":      endpoint{},
 				"us-east-2":      endpoint{},
@@ -1864,6 +1873,19 @@ var awsPartition = partition{
 				"us-west-2":      endpoint{},
 			},
 		},
+		"runtime.sagemaker": service{
+			Defaults: endpoint{
+				CredentialScope: credentialScope{
+					Service: "sagemaker",
+				},
+			},
+			Endpoints: endpoints{
+				"eu-west-1": endpoint{},
+				"us-east-1": endpoint{},
+				"us-east-2": endpoint{},
+				"us-west-2": endpoint{},
+			},
+		},
 		"s3": service{
 			PartitionEndpoint: "us-east-1",
 			IsRegionalized:    boxedTrue,
@@ -1926,12 +1948,19 @@ var awsPartition = partition{
 		"sagemaker": service{
 
 			Endpoints: endpoints{
+<<<<<<< HEAD
 				"ap-northeast-1": endpoint{},
 				"ap-northeast-2": endpoint{},
 				"eu-west-1":      endpoint{},
 				"us-east-1":      endpoint{},
 				"us-east-2":      endpoint{},
 				"us-west-2":      endpoint{},
+=======
+				"eu-west-1": endpoint{},
+				"us-east-1": endpoint{},
+				"us-east-2": endpoint{},
+				"us-west-2": endpoint{},
+>>>>>>> add code-generator dependency
 			},
 		},
 		"sdb": service{
@@ -1952,6 +1981,7 @@ var awsPartition = partition{
 				"us-west-2": endpoint{},
 			},
 		},
+<<<<<<< HEAD
 		"secretsmanager": service{
 
 			Endpoints: endpoints{
@@ -1971,6 +2001,8 @@ var awsPartition = partition{
 				"us-west-2":      endpoint{},
 			},
 		},
+=======
+>>>>>>> add code-generator dependency
 		"serverlessrepo": service{
 			Defaults: endpoint{
 				Protocols: []string{"https"},
@@ -2366,7 +2398,10 @@ var awsPartition = partition{
 				Protocols: []string{"https"},
 			},
 			Endpoints: endpoints{
+<<<<<<< HEAD
 				"eu-west-1": endpoint{},
+=======
+>>>>>>> add code-generator dependency
 				"us-east-1": endpoint{},
 				"us-east-2": endpoint{},
 				"us-west-2": endpoint{},
@@ -3180,6 +3215,7 @@ var awsusgovPartition = partition{
 				"us-gov-west-1": endpoint{},
 			},
 		},
+<<<<<<< HEAD
 		"translate": service{
 			Defaults: endpoint{
 				Protocols: []string{"https"},
@@ -3188,5 +3224,7 @@ var awsusgovPartition = partition{
 				"us-gov-west-1": endpoint{},
 			},
 		},
+=======
+>>>>>>> add code-generator dependency
 	},
 }
