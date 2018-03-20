@@ -25,13 +25,13 @@ import (
 	crdv1 "github.com/kubernetes-incubator/external-storage/snapshot/pkg/apis/volumesnapshot/v1"
 	"github.com/kubernetes-incubator/external-storage/snapshot/pkg/controller/cache"
 	"github.com/kubernetes-incubator/external-storage/snapshot/pkg/volume"
-	v1 "k8s.io/api/core/v1"
+	"k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
-	"k8s.io/apimachinery/pkg/runtime"
+
+	snapshotclientset "github.com/kubernetes-incubator/external-storage/snapshot/pkg/client/clientset/versioned"
 	"k8s.io/apimachinery/pkg/util/uuid"
 	"k8s.io/apimachinery/pkg/util/wait"
 	"k8s.io/client-go/kubernetes"
-	"k8s.io/client-go/rest"
 	"k8s.io/kubernetes/pkg/util/goroutinemap"
 	"k8s.io/kubernetes/pkg/util/goroutinemap/exponentialbackoff"
 )
@@ -65,9 +65,8 @@ type VolumeSnapshotter interface {
 }
 
 type volumeSnapshotter struct {
-	restClient         *rest.RESTClient
+	restClient         snapshotclientset.Interface
 	coreClient         kubernetes.Interface
-	scheme             *runtime.Scheme
 	actualStateOfWorld cache.ActualStateOfWorld
 	runningOperation   goroutinemap.GoRoutineMap
 	volumePlugins      *map[string]volume.Plugin
@@ -98,15 +97,13 @@ const (
 
 // NewVolumeSnapshotter create a new VolumeSnapshotter
 func NewVolumeSnapshotter(
-	restClient *rest.RESTClient,
-	scheme *runtime.Scheme,
+	restClient snapshotclientset.Interface,
 	clientset kubernetes.Interface,
 	asw cache.ActualStateOfWorld,
 	volumePlugins *map[string]volume.Plugin) VolumeSnapshotter {
 	return &volumeSnapshotter{
 		restClient:         restClient,
 		coreClient:         clientset,
-		scheme:             scheme,
 		actualStateOfWorld: asw,
 		runningOperation:   goroutinemap.NewGoRoutineMap(defaultExponentialBackOffOnError),
 		volumePlugins:      volumePlugins,
@@ -140,13 +137,9 @@ func (vs *volumeSnapshotter) getPVFromVolumeSnapshot(uniqueSnapshotName string, 
 // whether there is existing VolumeSnapshotData refers to the snapshot already.
 // Helper function that looks up VolumeSnapshotData for a VolumeSnapshot named snapshotName
 func (vs *volumeSnapshotter) getSnapshotDataFromSnapshotName(uniqueSnapshotName string) *crdv1.VolumeSnapshotData {
-	var snapshotDataList crdv1.VolumeSnapshotDataList
 	var snapshotDataObj crdv1.VolumeSnapshotData
 	var found bool
-
-	err := vs.restClient.Get().
-		Resource(crdv1.VolumeSnapshotDataResourcePlural).
-		Do().Into(&snapshotDataList)
+	snapshotDataList, err := vs.restClient.VolumesnapshotV1().VolumeSnapshotDatas().List(metav1.ListOptions{})
 	if err != nil {
 		glog.Errorf("Error retrieving the VolumeSnapshotData objects from API server: %v", err)
 		return nil
@@ -175,20 +168,16 @@ func (vs *volumeSnapshotter) getSnapshotDataFromSnapshotName(uniqueSnapshotName 
 
 // Helper function that looks up VolumeSnapshotData from a VolumeSnapshot
 func (vs *volumeSnapshotter) getSnapshotDataFromSnapshot(snapshot *crdv1.VolumeSnapshot) (*crdv1.VolumeSnapshotData, error) {
-	var snapshotDataObj crdv1.VolumeSnapshotData
 	snapshotDataName := snapshot.Spec.SnapshotDataName
 	if snapshotDataName == "" {
 		return nil, fmt.Errorf("Could not find snapshot data object: SnapshotDataName in snapshot spec is empty")
 	}
-	err := vs.restClient.Get().
-		Name(snapshotDataName).
-		Resource(crdv1.VolumeSnapshotDataResourcePlural).
-		Do().Into(&snapshotDataObj)
+	snapshotDataObj, err := vs.restClient.VolumesnapshotV1().VolumeSnapshotDatas().Get(snapshotDataName, metav1.GetOptions{})
 	if err != nil {
 		glog.Errorf("Error retrieving the VolumeSnapshotData objects from API server: %v", err)
 		return nil, fmt.Errorf("Could not get snapshot data object %s: %v", snapshotDataName, err)
 	}
-	return &snapshotDataObj, nil
+	return snapshotDataObj, nil
 }
 
 // Query status of the snapshot from plugin and update the status of VolumeSnapshot and VolumeSnapshotData
@@ -563,12 +552,10 @@ func (vs *volumeSnapshotter) createVolumeSnapshotData(uniqueSnapshotName, pvName
 		Factor:   volumeSnapshotFactor,
 		Steps:    volumeSnapshotSteps,
 	}
-	var result crdv1.VolumeSnapshotData
-	err := wait.ExponentialBackoff(backoff, func() (bool, error) {
-		err := vs.restClient.Post().
-			Resource(crdv1.VolumeSnapshotDataResourcePlural).
-			Body(snapshotData).
-			Do().Into(&result)
+	var result *crdv1.VolumeSnapshotData
+	var err error
+	err = wait.ExponentialBackoff(backoff, func() (bool, error) {
+		result, err = vs.restClient.VolumesnapshotV1().VolumeSnapshotDatas().Create(snapshotData)
 		if err != nil {
 			// Re-Try it as errors writing to the API server are common
 			return false, err
@@ -580,7 +567,7 @@ func (vs *volumeSnapshotter) createVolumeSnapshotData(uniqueSnapshotName, pvName
 		glog.Errorf("createVolumeSnapshotData: Error creating the VolumeSnapshotData %s: %v", uniqueSnapshotName, err)
 		return nil, fmt.Errorf("Failed to create the VolumeSnapshotData %s for snapshot %s", snapDataName, uniqueSnapshotName)
 	}
-	return &result, nil
+	return result, nil
 }
 
 func (vs *volumeSnapshotter) getSnapshotDeleteFunc(uniqueSnapshotName string, snapshot *crdv1.VolumeSnapshot) func() error {
@@ -605,11 +592,7 @@ func (vs *volumeSnapshotter) getSnapshotDeleteFunc(uniqueSnapshotName string, sn
 		}
 
 		snapshotDataName := snapshotDataObj.ObjectMeta.Name
-		var result metav1.Status
-		err = vs.restClient.Delete().
-			Name(snapshotDataName).
-			Resource(crdv1.VolumeSnapshotDataResourcePlural).
-			Do().Into(&result)
+		err = vs.restClient.VolumesnapshotV1().VolumeSnapshotDatas().Delete(snapshotDataName, &metav1.DeleteOptions{})
 		if err != nil {
 			return fmt.Errorf("Failed to delete VolumeSnapshotData %s from API server: %q", snapshotDataName, err)
 		}
@@ -690,13 +673,8 @@ func (vs *volumeSnapshotter) PromoteVolumeSnapshotToPV(snapshot *crdv1.VolumeSna
 // Update VolumeSnapshot object with current timestamp and associated PersistentVolume name in object's metadata
 func (vs *volumeSnapshotter) updateVolumeSnapshotMetadata(snapshot *crdv1.VolumeSnapshot, pvName string) (*map[string]string, error) {
 	glog.Infof("In updateVolumeSnapshotMetadata")
-	var snapshotObj crdv1.VolumeSnapshot
 	// Need to get a fresh copy of the VolumeSnapshot from the API server
-	err := vs.restClient.Get().
-		Name(snapshot.ObjectMeta.Name).
-		Resource(crdv1.VolumeSnapshotResourcePlural).
-		Namespace(snapshot.ObjectMeta.Namespace).
-		Do().Into(&snapshotObj)
+	snapshotObj, err := vs.restClient.VolumesnapshotV1().VolumeSnapshots(snapshot.ObjectMeta.Namespace).Get(snapshot.ObjectMeta.Name, metav1.GetOptions{})
 	if err != nil {
 		return nil, fmt.Errorf("Error retrieving VolumeSnapshot %s from API server: %v", snapshot.ObjectMeta.Name, err)
 	}
@@ -712,13 +690,7 @@ func (vs *volumeSnapshotter) updateVolumeSnapshotMetadata(snapshot *crdv1.Volume
 		snapshotCopy.ObjectMeta.UID, snapshotCopy.ObjectMeta.Name, snapshotCopy.ObjectMeta.Namespace, snapshotCopy.ObjectMeta.Labels)
 
 	// TODO: Use Patch instead of Put to update the object?
-	var result crdv1.VolumeSnapshot
-	err = vs.restClient.Put().
-		Name(snapshot.ObjectMeta.Name).
-		Resource(crdv1.VolumeSnapshotResourcePlural).
-		Namespace(snapshot.ObjectMeta.Namespace).
-		Body(snapshotCopy).
-		Do().Into(&result)
+	result, err := vs.restClient.VolumesnapshotV1().VolumeSnapshots(snapshot.ObjectMeta.Namespace).Update(snapshotCopy)
 	if err != nil {
 		return nil, fmt.Errorf("Error updating snapshot object %s/%s on the API server: %v", snapshot.ObjectMeta.Namespace, snapshot.ObjectMeta.Name, err)
 	}
@@ -791,13 +763,7 @@ func (vs *volumeSnapshotter) propagateVolumeSnapshotCondition(snapshotDataName s
 
 // Update VolumeSnapshot status if the condition is changed.
 func (vs *volumeSnapshotter) UpdateVolumeSnapshotStatus(snapshot *crdv1.VolumeSnapshot, condition *crdv1.VolumeSnapshotCondition) (*crdv1.VolumeSnapshot, error) {
-	var snapshotObj crdv1.VolumeSnapshot
-
-	err := vs.restClient.Get().
-		Name(snapshot.ObjectMeta.Name).
-		Resource(crdv1.VolumeSnapshotResourcePlural).
-		Namespace(snapshot.ObjectMeta.Namespace).
-		Do().Into(&snapshotObj)
+	snapshotObj, err := vs.restClient.VolumesnapshotV1().VolumeSnapshots(snapshot.ObjectMeta.Namespace).Get(snapshot.ObjectMeta.Name, metav1.GetOptions{})
 	if err != nil {
 		return nil, err
 	}
@@ -821,14 +787,8 @@ func (vs *volumeSnapshotter) UpdateVolumeSnapshotStatus(snapshot *crdv1.VolumeSn
 	}
 
 	if !isEqual {
-		var newSnapshotObj crdv1.VolumeSnapshot
 		snapshotObj.Status = status
-		err = vs.restClient.Put().
-			Name(snapshot.ObjectMeta.Name).
-			Resource(crdv1.VolumeSnapshotResourcePlural).
-			Namespace(snapshot.ObjectMeta.Namespace).
-			Body(&snapshotObj).
-			Do().Into(&newSnapshotObj)
+		newSnapshotObj, err := vs.restClient.VolumesnapshotV1().VolumeSnapshots(snapshot.ObjectMeta.Namespace).UpdateStatus(snapshotObj)
 		if err != nil {
 			return nil, err
 		}
@@ -877,5 +837,5 @@ func (vs *volumeSnapshotter) bindandUpdateVolumeSnapshot(snapshot *crdv1.VolumeS
 		return nil, fmt.Errorf("Error updating snapshot object %s on the API server: %v", uniqueSnapshotName, err)
 	}
 
-	return &result, nil
+	return result, nil
 }
