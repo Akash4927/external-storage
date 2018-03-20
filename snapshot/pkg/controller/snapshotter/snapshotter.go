@@ -319,14 +319,14 @@ func (vs *volumeSnapshotter) getSimplifiedSnapshotStatus(conditions []crdv1.Volu
 
 func (vs *volumeSnapshotter) findVolumeSnapshotMetadata(snapshot *crdv1.VolumeSnapshot) *map[string]string {
 	var tags map[string]string
-	if snapshot.Metadata.Name != "" && snapshot.Metadata.Namespace != "" && snapshot.Metadata.UID != "" {
-		if snapshot.Metadata.Labels != nil {
-			timestamp, ok := snapshot.Metadata.Labels[snapshotMetadataTimeStamp]
+	if snapshot.ObjectMeta.Name != "" && snapshot.ObjectMeta.Namespace != "" && snapshot.ObjectMeta.UID != "" {
+		if snapshot.ObjectMeta.Labels != nil {
+			timestamp, ok := snapshot.ObjectMeta.Labels[snapshotMetadataTimeStamp]
 			if ok {
 				tags = make(map[string]string)
-				tags[CloudSnapshotCreatedForVolumeSnapshotNamespaceTag] = snapshot.Metadata.Namespace
-				tags[CloudSnapshotCreatedForVolumeSnapshotNameTag] = snapshot.Metadata.Name
-				tags[CloudSnapshotCreatedForVolumeSnapshotUIDTag] = fmt.Sprintf("%v", snapshot.Metadata.UID)
+				tags[CloudSnapshotCreatedForVolumeSnapshotNamespaceTag] = snapshot.ObjectMeta.Namespace
+				tags[CloudSnapshotCreatedForVolumeSnapshotNameTag] = snapshot.ObjectMeta.Name
+				tags[CloudSnapshotCreatedForVolumeSnapshotUIDTag] = fmt.Sprintf("%v", snapshot.ObjectMeta.UID)
 				tags[CloudSnapshotCreatedForVolumeSnapshotTimestampTag] = timestamp
 				glog.Infof("findVolumeSnapshotMetadata: returning tags [%#v]", tags)
 			}
@@ -354,7 +354,7 @@ func (vs *volumeSnapshotter) getPlugin(uniqueSnapshotName string, snapshot *crdv
 
 // Exame the given snapshot in detail and then return the status
 func (vs *volumeSnapshotter) updateSnapshotIfExists(uniqueSnapshotName string, snapshot *crdv1.VolumeSnapshot) (string, *crdv1.VolumeSnapshot, error) {
-	snapshotName := snapshot.Metadata.Name
+	snapshotName := snapshot.ObjectMeta.Name
 	var snapshotDataObj *crdv1.VolumeSnapshotData
 	var snapshotDataSource *crdv1.VolumeSnapshotDataSource
 	var conditions *[]crdv1.VolumeSnapshotCondition
@@ -383,7 +383,7 @@ func (vs *volumeSnapshotter) updateSnapshotIfExists(uniqueSnapshotName string, s
 	}
 	// Snapshot is found. Create VolumeSnapshotData, bind VolumeSnapshotData to VolumeSnapshot, and update VolumeSnapshot status
 	glog.Infof("updateSnapshotIfExists: create VolumeSnapshotData object for VolumeSnapshot %s.", uniqueSnapshotName)
-	pvName, ok := snapshot.Metadata.Labels[pvNameLabel]
+	pvName, ok := snapshot.ObjectMeta.Labels[pvNameLabel]
 	if !ok {
 		return statusError, snapshot, fmt.Errorf("Could not find pv name from snapshot, this should not happen.")
 	}
@@ -536,7 +536,7 @@ func (vs *volumeSnapshotter) createVolumeSnapshotData(uniqueSnapshotName, pvName
 	// Generate snapshotData name with the UID of snapshot object
 	snapDataName := fmt.Sprintf("%s-%s", snapshotDataNamePrefix, uuid.NewUUID())
 	snapshotData := &crdv1.VolumeSnapshotData{
-		Metadata: metav1.ObjectMeta{
+		ObjectMeta: metav1.ObjectMeta{
 			Name: snapDataName,
 		},
 		Spec: crdv1.VolumeSnapshotDataSpec{
@@ -604,7 +604,7 @@ func (vs *volumeSnapshotter) getSnapshotDeleteFunc(uniqueSnapshotName string, sn
 			return fmt.Errorf("Failed to delete snapshot %s: %q", uniqueSnapshotName, err)
 		}
 
-		snapshotDataName := snapshotDataObj.Metadata.Name
+		snapshotDataName := snapshotDataObj.ObjectMeta.Name
 		var result metav1.Status
 		err = vs.restClient.Delete().
 			Name(snapshotDataName).
@@ -693,42 +693,41 @@ func (vs *volumeSnapshotter) updateVolumeSnapshotMetadata(snapshot *crdv1.Volume
 	var snapshotObj crdv1.VolumeSnapshot
 	// Need to get a fresh copy of the VolumeSnapshot from the API server
 	err := vs.restClient.Get().
-		Name(snapshot.Metadata.Name).
+		Name(snapshot.ObjectMeta.Name).
 		Resource(crdv1.VolumeSnapshotResourcePlural).
-		Namespace(snapshot.Metadata.Namespace).
+		Namespace(snapshot.ObjectMeta.Namespace).
 		Do().Into(&snapshotObj)
 	if err != nil {
-		return nil, fmt.Errorf("Error retrieving VolumeSnapshot %s from API server: %v", snapshot.Metadata.Name, err)
+		return nil, fmt.Errorf("Error retrieving VolumeSnapshot %s from API server: %v", snapshot.ObjectMeta.Name, err)
 	}
 
 	// Copy the snapshot object before updating it
 	snapshotCopy := snapshotObj.DeepCopy()
 
-	if snapshotCopy.Metadata.Labels == nil {
-		snapshotCopy.Metadata.Labels = make(map[string]string)
-	}
-	snapshotCopy.Metadata.Labels[snapshotMetadataTimeStamp] = fmt.Sprintf("%d", time.Now().UnixNano())
-	snapshotCopy.Metadata.Labels[snapshotMetadataPVName] = pvName
-	glog.Infof("updateVolumeSnapshotMetadata: Metadata UID: %s Metadata Name: %s Metadata Namespace: %s Setting tags in Metadata Labels: %#v.",
-		snapshotCopy.Metadata.UID, snapshotCopy.Metadata.Name, snapshotCopy.Metadata.Namespace, snapshotCopy.Metadata.Labels)
+	tags := make(map[string]string)
+	tags[snapshotMetadataTimeStamp] = fmt.Sprintf("%d", time.Now().UnixNano())
+	tags[snapshotMetadataPVName] = pvName
+	snapshotCopy.ObjectMeta.Labels = tags
+	glog.Infof("updateVolumeSnapshotObjectMeta: ObjectMeta UID: %s ObjectMeta Name: %s ObjectMeta Namespace: %s Setting tags in ObjectMeta Labels: %#v.",
+		snapshotCopy.ObjectMeta.UID, snapshotCopy.ObjectMeta.Name, snapshotCopy.ObjectMeta.Namespace, snapshotCopy.ObjectMeta.Labels)
 
 	// TODO: Use Patch instead of Put to update the object?
 	var result crdv1.VolumeSnapshot
 	err = vs.restClient.Put().
-		Name(snapshot.Metadata.Name).
+		Name(snapshot.ObjectMeta.Name).
 		Resource(crdv1.VolumeSnapshotResourcePlural).
-		Namespace(snapshot.Metadata.Namespace).
+		Namespace(snapshot.ObjectMeta.Namespace).
 		Body(snapshotCopy).
 		Do().Into(&result)
 	if err != nil {
-		return nil, fmt.Errorf("Error updating snapshot object %s/%s on the API server: %v", snapshot.Metadata.Namespace, snapshot.Metadata.Name, err)
+		return nil, fmt.Errorf("Error updating snapshot object %s/%s on the API server: %v", snapshot.ObjectMeta.Namespace, snapshot.ObjectMeta.Name, err)
 	}
 
 	cloudTags := make(map[string]string)
-	cloudTags[CloudSnapshotCreatedForVolumeSnapshotNamespaceTag] = result.Metadata.Namespace
-	cloudTags[CloudSnapshotCreatedForVolumeSnapshotNameTag] = result.Metadata.Name
-	cloudTags[CloudSnapshotCreatedForVolumeSnapshotUIDTag] = fmt.Sprintf("%v", result.Metadata.UID)
-	cloudTags[CloudSnapshotCreatedForVolumeSnapshotTimestampTag] = result.Metadata.Labels[snapshotMetadataTimeStamp]
+	cloudTags[CloudSnapshotCreatedForVolumeSnapshotNamespaceTag] = result.ObjectMeta.Namespace
+	cloudTags[CloudSnapshotCreatedForVolumeSnapshotNameTag] = result.ObjectMeta.Name
+	cloudTags[CloudSnapshotCreatedForVolumeSnapshotUIDTag] = fmt.Sprintf("%v", result.ObjectMeta.UID)
+	cloudTags[CloudSnapshotCreatedForVolumeSnapshotTimestampTag] = result.ObjectMeta.Labels[snapshotMetadataTimeStamp]
 
 	glog.Infof("updateVolumeSnapshotMetadata: returning cloudTags [%#v]", cloudTags)
 	return &cloudTags, nil
@@ -795,9 +794,9 @@ func (vs *volumeSnapshotter) UpdateVolumeSnapshotStatus(snapshot *crdv1.VolumeSn
 	var snapshotObj crdv1.VolumeSnapshot
 
 	err := vs.restClient.Get().
-		Name(snapshot.Metadata.Name).
+		Name(snapshot.ObjectMeta.Name).
 		Resource(crdv1.VolumeSnapshotResourcePlural).
-		Namespace(snapshot.Metadata.Namespace).
+		Namespace(snapshot.ObjectMeta.Namespace).
 		Do().Into(&snapshotObj)
 	if err != nil {
 		return nil, err
@@ -825,9 +824,9 @@ func (vs *volumeSnapshotter) UpdateVolumeSnapshotStatus(snapshot *crdv1.VolumeSn
 		var newSnapshotObj crdv1.VolumeSnapshot
 		snapshotObj.Status = status
 		err = vs.restClient.Put().
-			Name(snapshot.Metadata.Name).
+			Name(snapshot.ObjectMeta.Name).
 			Resource(crdv1.VolumeSnapshotResourcePlural).
-			Namespace(snapshot.Metadata.Namespace).
+			Namespace(snapshot.ObjectMeta.Namespace).
 			Body(&snapshotObj).
 			Do().Into(&newSnapshotObj)
 		if err != nil {

@@ -187,7 +187,7 @@ func (c *snapshotController) onSnapshotAdd(obj interface{}) {
 	}
 	snapshot := snapshotObj.DeepCopy()
 
-	glog.Infof("[CONTROLLER] OnAdd %s, Snapshot %#v", snapshot.Metadata.SelfLink, snapshot)
+	glog.Infof("[CONTROLLER] OnAdd %s, Snapshot %#v", snapshot.ObjectMeta.SelfLink, snapshot)
 	c.desiredStateOfWorld.AddSnapshot(snapshot)
 }
 
