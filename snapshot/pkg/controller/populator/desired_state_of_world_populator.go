@@ -22,11 +22,12 @@ import (
 	"time"
 
 	"github.com/golang/glog"
-	"github.com/kubernetes-incubator/external-storage/snapshot/pkg/controller/cache"
-	"k8s.io/apimachinery/pkg/util/wait"
 	listers "github.com/kubernetes-incubator/external-storage/snapshot/pkg/client/listers/volumesnapshot/v1"
+	"github.com/kubernetes-incubator/external-storage/snapshot/pkg/controller/cache"
 	"k8s.io/apimachinery/pkg/api/errors"
 	"k8s.io/apimachinery/pkg/labels"
+	"k8s.io/apimachinery/pkg/util/wait"
+	"time"
 )
 
 // DesiredStateOfWorldPopulator periodically verifies that the snapshot in the
