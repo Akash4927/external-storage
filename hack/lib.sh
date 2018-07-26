@@ -30,6 +30,8 @@ function hack::build_generators() {
     #   go-to-protobuf/protoc-gen-gogo
     local targets=(
         deepcopy-gen
+	client-gen
+	informer-gen
     )
     local need_regenerated=true
     # TODO find a way to avoid regenerating if possible
