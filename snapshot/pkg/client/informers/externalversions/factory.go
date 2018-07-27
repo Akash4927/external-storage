@@ -23,9 +23,9 @@ import (
 	sync "sync"
 	time "time"
 
-	versioned "github.com/kubernetes-incubator/external-storage/snapshot/pkg/client/clientset/versioned"
-	internalinterfaces "github.com/kubernetes-incubator/external-storage/snapshot/pkg/client/informers/externalversions/internalinterfaces"
-	volumesnapshotexternalstoragek8sio "github.com/kubernetes-incubator/external-storage/snapshot/pkg/client/informers/externalversions/volumesnapshot.external-storage.k8s.io"
+	versioned "github.com/akash4927/external-storage/snapshot/pkg/client/clientset/versioned"
+	internalinterfaces "github.com/akash4927/external-storage/snapshot/pkg/client/informers/externalversions/internalinterfaces"
+	volumesnapshotexternalstoragek8sio "github.com/akash4927/external-storage/snapshot/pkg/client/informers/externalversions/volumesnapshot.external-storage.k8s.io"
 	v1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	runtime "k8s.io/apimachinery/pkg/runtime"
 	schema "k8s.io/apimachinery/pkg/runtime/schema"

@@ -19,8 +19,8 @@ limitations under the License.
 package volumesnapshot
 
 import (
-	internalinterfaces "github.com/kubernetes-incubator/external-storage/snapshot/pkg/client/informers/externalversions/internalinterfaces"
-	v1 "github.com/kubernetes-incubator/external-storage/snapshot/pkg/client/informers/externalversions/volumesnapshot.external-storage.k8s.io/v1"
+	internalinterfaces "github.com/akash4927/external-storage/snapshot/pkg/client/informers/externalversions/internalinterfaces"
+	v1 "github.com/akash4927/external-storage/snapshot/pkg/client/informers/externalversions/volumesnapshot.external-storage.k8s.io/v1"
 )
 
 // Interface provides access to each of this group's versions.

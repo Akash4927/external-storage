@@ -19,7 +19,7 @@ limitations under the License.
 package fake
 
 import (
-	volumesnapshotexternalstoragek8siov1 "github.com/kubernetes-incubator/external-storage/snapshot/pkg/apis/volumesnapshot.external-storage.k8s.io/v1"
+	volumesnapshotexternalstoragek8siov1 "github.com/kubernetes-incubator/external-storage/snapshot/pkg/apis/crd/v1"
 	v1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	labels "k8s.io/apimachinery/pkg/labels"
 	schema "k8s.io/apimachinery/pkg/runtime/schema"

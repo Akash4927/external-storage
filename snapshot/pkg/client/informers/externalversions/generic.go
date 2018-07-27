@@ -21,7 +21,7 @@ package externalversions
 import (
 	"fmt"
 
-	v1 "github.com/kubernetes-incubator/external-storage/snapshot/pkg/apis/volumesnapshot.external-storage.k8s.io/v1"
+	v1 "github.com/kubernetes-incubator/external-storage/snapshot/pkg/apis/crd/v1"
 	schema "k8s.io/apimachinery/pkg/runtime/schema"
 	cache "k8s.io/client-go/tools/cache"
 )

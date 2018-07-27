@@ -19,7 +19,7 @@ limitations under the License.
 package v1
 
 import (
-	internalinterfaces "github.com/kubernetes-incubator/external-storage/snapshot/pkg/client/informers/externalversions/internalinterfaces"
+	internalinterfaces "github.com/akash4927/external-storage/snapshot/pkg/client/informers/externalversions/internalinterfaces"
 )
 
 // Interface provides access to all the informers in this group version.

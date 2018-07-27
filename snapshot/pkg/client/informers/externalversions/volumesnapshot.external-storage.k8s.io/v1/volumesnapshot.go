@@ -21,10 +21,10 @@ package v1
 import (
 	time "time"
 
-	volumesnapshotexternalstoragek8siov1 "github.com/kubernetes-incubator/external-storage/snapshot/pkg/apis/volumesnapshot.external-storage.k8s.io/v1"
-	versioned "github.com/kubernetes-incubator/external-storage/snapshot/pkg/client/clientset/versioned"
-	internalinterfaces "github.com/kubernetes-incubator/external-storage/snapshot/pkg/client/informers/externalversions/internalinterfaces"
-	v1 "github.com/kubernetes-incubator/external-storage/snapshot/pkg/client/listers/volumesnapshot.external-storage.k8s.io/v1"
+	versioned "github.com/akash4927/external-storage/snapshot/pkg/client/clientset/versioned"
+	internalinterfaces "github.com/akash4927/external-storage/snapshot/pkg/client/informers/externalversions/internalinterfaces"
+	v1 "github.com/akash4927/external-storage/snapshot/pkg/client/listers/volumesnapshot.external-storage.k8s.io/v1"
+	volumesnapshotexternalstoragek8siov1 "github.com/kubernetes-incubator/external-storage/snapshot/pkg/apis/crd/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	runtime "k8s.io/apimachinery/pkg/runtime"
 	watch "k8s.io/apimachinery/pkg/watch"

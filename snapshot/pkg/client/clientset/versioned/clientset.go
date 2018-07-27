@@ -19,7 +19,7 @@ limitations under the License.
 package versioned
 
 import (
-	volumesnapshotv1 "github.com/kubernetes-incubator/external-storage/snapshot/pkg/client/clientset/versioned/typed/volumesnapshot.external-storage.k8s.io/v1"
+	volumesnapshotv1 "github.com/akash4927/external-storage/snapshot/pkg/client/clientset/versioned/typed/volumesnapshot.external-storage.k8s.io/v1"
 	discovery "k8s.io/client-go/discovery"
 	rest "k8s.io/client-go/rest"
 	flowcontrol "k8s.io/client-go/util/flowcontrol"
