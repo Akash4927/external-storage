@@ -18,7 +18,7 @@ limitations under the License.
 package fake
 
 import (
-	volumesnapshotv1 "github.com/kubernetes-incubator/external-storage/snapshot/pkg/apis/volumesnapshot/v1"
+	volumesnapshotv1 "github.com/openebs/external-storage/snapshot/pkg/apis/volumesnapshot/v1"
 	v1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	labels "k8s.io/apimachinery/pkg/labels"
 	schema "k8s.io/apimachinery/pkg/runtime/schema"

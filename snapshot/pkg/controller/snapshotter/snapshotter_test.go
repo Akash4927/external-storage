@@ -25,11 +25,11 @@ import (
 
 	"k8s.io/client-go/kubernetes/fake"
 
-	crdv1 "github.com/kubernetes-incubator/external-storage/snapshot/pkg/apis/volumesnapshot/v1"
-	snapshotfake "github.com/kubernetes-incubator/external-storage/snapshot/pkg/client/clientset/versioned/fake"
-	"github.com/kubernetes-incubator/external-storage/snapshot/pkg/cloudprovider"
-	"github.com/kubernetes-incubator/external-storage/snapshot/pkg/controller/cache"
-	"github.com/kubernetes-incubator/external-storage/snapshot/pkg/volume"
+	crdv1 "github.com/openebs/external-storage/snapshot/pkg/apis/volumesnapshot/v1"
+	snapshotfake "github.com/openebs/external-storage/snapshot/pkg/client/clientset/versioned/fake"
+	"github.com/openebs/external-storage/snapshot/pkg/cloudprovider"
+	"github.com/openebs/external-storage/snapshot/pkg/controller/cache"
+	"github.com/openebs/external-storage/snapshot/pkg/volume"
 )
 
 // TestPlugin methods

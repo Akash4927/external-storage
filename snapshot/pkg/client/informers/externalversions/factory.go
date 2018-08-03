@@ -22,9 +22,9 @@ import (
 	sync "sync"
 	time "time"
 
-	versioned "github.com/kubernetes-incubator/external-storage/snapshot/pkg/client/clientset/versioned"
-	internalinterfaces "github.com/kubernetes-incubator/external-storage/snapshot/pkg/client/informers/externalversions/internalinterfaces"
-	volumesnapshot "github.com/kubernetes-incubator/external-storage/snapshot/pkg/client/informers/externalversions/volumesnapshot"
+	versioned "github.com/openebs/external-storage/snapshot/pkg/client/clientset/versioned"
+	internalinterfaces "github.com/openebs/external-storage/snapshot/pkg/client/informers/externalversions/internalinterfaces"
+	volumesnapshot "github.com/openebs/external-storage/snapshot/pkg/client/informers/externalversions/volumesnapshot"
 	v1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	runtime "k8s.io/apimachinery/pkg/runtime"
 	schema "k8s.io/apimachinery/pkg/runtime/schema"

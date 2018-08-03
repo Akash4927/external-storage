@@ -22,13 +22,13 @@ import (
 
 	"github.com/golang/glog"
 
-	crdv1 "github.com/kubernetes-incubator/external-storage/snapshot/pkg/apis/volumesnapshot/v1"
-	"github.com/kubernetes-incubator/external-storage/snapshot/pkg/controller/cache"
-	"github.com/kubernetes-incubator/external-storage/snapshot/pkg/volume"
+	crdv1 "github.com/openebs/external-storage/snapshot/pkg/apis/volumesnapshot/v1"
+	"github.com/openebs/external-storage/snapshot/pkg/controller/cache"
+	"github.com/openebs/external-storage/snapshot/pkg/volume"
 	"k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 
-	snapshotclientset "github.com/kubernetes-incubator/external-storage/snapshot/pkg/client/clientset/versioned"
+	snapshotclientset "github.com/openebs/external-storage/snapshot/pkg/client/clientset/versioned"
 	"k8s.io/apimachinery/pkg/util/uuid"
 	"k8s.io/apimachinery/pkg/util/wait"
 	"k8s.io/client-go/kubernetes"

@@ -24,8 +24,8 @@ import (
 	"sync"
 
 	"github.com/golang/glog"
-	"github.com/kubernetes-incubator/external-storage/lib/allocator"
-	"github.com/kubernetes-incubator/external-storage/lib/controller"
+	"github.com/openebs/external-storage/lib/allocator"
+	"github.com/openebs/external-storage/lib/controller"
 	"k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/client-go/kubernetes"

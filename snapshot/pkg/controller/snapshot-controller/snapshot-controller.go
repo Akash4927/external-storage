@@ -26,16 +26,16 @@ import (
 	"k8s.io/client-go/tools/record"
 	kcontroller "k8s.io/kubernetes/pkg/controller"
 
-	crdv1 "github.com/kubernetes-incubator/external-storage/snapshot/pkg/apis/volumesnapshot/v1"
-	"github.com/kubernetes-incubator/external-storage/snapshot/pkg/controller/cache"
-	"github.com/kubernetes-incubator/external-storage/snapshot/pkg/controller/reconciler"
-	"github.com/kubernetes-incubator/external-storage/snapshot/pkg/controller/snapshotter"
-	"github.com/kubernetes-incubator/external-storage/snapshot/pkg/volume"
+	crdv1 "github.com/openebs/external-storage/snapshot/pkg/apis/volumesnapshot/v1"
+	"github.com/openebs/external-storage/snapshot/pkg/controller/cache"
+	"github.com/openebs/external-storage/snapshot/pkg/controller/reconciler"
+	"github.com/openebs/external-storage/snapshot/pkg/controller/snapshotter"
+	"github.com/openebs/external-storage/snapshot/pkg/volume"
 
-	snapshotclientset "github.com/kubernetes-incubator/external-storage/snapshot/pkg/client/clientset/versioned"
-	informers "github.com/kubernetes-incubator/external-storage/snapshot/pkg/client/informers/externalversions"
-	listers "github.com/kubernetes-incubator/external-storage/snapshot/pkg/client/listers/volumesnapshot/v1"
-	"github.com/kubernetes-incubator/external-storage/snapshot/pkg/controller/populator"
+	snapshotclientset "github.com/openebs/external-storage/snapshot/pkg/client/clientset/versioned"
+	informers "github.com/openebs/external-storage/snapshot/pkg/client/informers/externalversions"
+	listers "github.com/openebs/external-storage/snapshot/pkg/client/listers/volumesnapshot/v1"
+	"github.com/openebs/external-storage/snapshot/pkg/controller/populator"
 )
 
 const (

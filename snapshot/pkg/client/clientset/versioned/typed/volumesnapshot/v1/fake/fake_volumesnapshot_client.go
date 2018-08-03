@@ -18,7 +18,7 @@ limitations under the License.
 package fake
 
 import (
-	v1 "github.com/kubernetes-incubator/external-storage/snapshot/pkg/client/clientset/versioned/typed/volumesnapshot/v1"
+	v1 "github.com/openebs/external-storage/snapshot/pkg/client/clientset/versioned/typed/volumesnapshot/v1"
 	rest "k8s.io/client-go/rest"
 	testing "k8s.io/client-go/testing"
 )

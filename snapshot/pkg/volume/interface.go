@@ -19,8 +19,8 @@ package volume
 import (
 	"k8s.io/api/core/v1"
 
-	crdv1 "github.com/kubernetes-incubator/external-storage/snapshot/pkg/apis/volumesnapshot/v1"
-	"github.com/kubernetes-incubator/external-storage/snapshot/pkg/cloudprovider"
+	crdv1 "github.com/openebs/external-storage/snapshot/pkg/apis/volumesnapshot/v1"
+	"github.com/openebs/external-storage/snapshot/pkg/cloudprovider"
 )
 
 // Plugin defines functions that should be implemented by the volume plugin

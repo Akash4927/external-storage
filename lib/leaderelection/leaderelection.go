@@ -30,7 +30,7 @@ import (
 
 	"k8s.io/apimachinery/pkg/api/errors"
 
-	rl "github.com/kubernetes-incubator/external-storage/lib/leaderelection/resourcelock"
+	rl "github.com/openebs/external-storage/lib/leaderelection/resourcelock"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/util/runtime"
 	"k8s.io/apimachinery/pkg/util/wait"

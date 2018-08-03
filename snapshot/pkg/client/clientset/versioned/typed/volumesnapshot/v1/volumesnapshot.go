@@ -18,8 +18,8 @@ limitations under the License.
 package v1
 
 import (
-	v1 "github.com/kubernetes-incubator/external-storage/snapshot/pkg/apis/volumesnapshot/v1"
-	scheme "github.com/kubernetes-incubator/external-storage/snapshot/pkg/client/clientset/versioned/scheme"
+	v1 "github.com/openebs/external-storage/snapshot/pkg/apis/volumesnapshot/v1"
+	scheme "github.com/openebs/external-storage/snapshot/pkg/client/clientset/versioned/scheme"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	types "k8s.io/apimachinery/pkg/types"
 	watch "k8s.io/apimachinery/pkg/watch"

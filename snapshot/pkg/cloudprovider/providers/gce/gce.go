@@ -42,7 +42,7 @@ import (
 
 	"cloud.google.com/go/compute/metadata"
 	"github.com/golang/glog"
-	"github.com/kubernetes-incubator/external-storage/snapshot/pkg/cloudprovider"
+	"github.com/openebs/external-storage/snapshot/pkg/cloudprovider"
 	"golang.org/x/oauth2"
 	"golang.org/x/oauth2/google"
 	compute "google.golang.org/api/compute/v1"

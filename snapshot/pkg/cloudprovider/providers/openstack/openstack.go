@@ -36,7 +36,7 @@ import (
 	"github.com/mitchellh/mapstructure"
 	"gopkg.in/gcfg.v1"
 
-	"github.com/kubernetes-incubator/external-storage/snapshot/pkg/cloudprovider"
+	"github.com/openebs/external-storage/snapshot/pkg/cloudprovider"
 	"k8s.io/api/core/v1"
 	"k8s.io/apimachinery/pkg/types"
 	netutil "k8s.io/apimachinery/pkg/util/net"

@@ -41,7 +41,7 @@ import (
 	"github.com/aws/aws-sdk-go/service/elb"
 	"github.com/golang/glog"
 
-	"github.com/kubernetes-incubator/external-storage/snapshot/pkg/cloudprovider"
+	"github.com/openebs/external-storage/snapshot/pkg/cloudprovider"
 
 	"k8s.io/api/core/v1"
 	"k8s.io/apimachinery/pkg/types"
