@@ -30,13 +30,8 @@ You can then use your token to create a new client:
 package main
 
 import (
-<<<<<<< HEAD
 	"context"
 	"github.com/digitalocean/godo"
-=======
-	"github.com/digitalocean/godo"
-	"github.com/digitalocean/godo/context"
->>>>>>> add code-generator dependency
 	"golang.org/x/oauth2"
 )
 

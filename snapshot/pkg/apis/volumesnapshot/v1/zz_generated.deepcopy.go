@@ -20,7 +20,7 @@ limitations under the License.
 package v1
 
 import (
-	core_v1 "k8s.io/api/core/v1"
+	corev1 "k8s.io/api/core/v1"
 	runtime "k8s.io/apimachinery/pkg/runtime"
 )
 
@@ -232,48 +232,28 @@ func (in *VolumeSnapshotDataSource) DeepCopyInto(out *VolumeSnapshotDataSource) 
 	*out = *in
 	if in.HostPath != nil {
 		in, out := &in.HostPath, &out.HostPath
-		if *in == nil {
-			*out = nil
-		} else {
-			*out = new(HostPathVolumeSnapshotSource)
-			**out = **in
-		}
+		*out = new(HostPathVolumeSnapshotSource)
+		**out = **in
 	}
 	if in.GlusterSnapshotVolume != nil {
 		in, out := &in.GlusterSnapshotVolume, &out.GlusterSnapshotVolume
-		if *in == nil {
-			*out = nil
-		} else {
-			*out = new(GlusterVolumeSnapshotSource)
-			**out = **in
-		}
+		*out = new(GlusterVolumeSnapshotSource)
+		**out = **in
 	}
 	if in.AWSElasticBlockStore != nil {
 		in, out := &in.AWSElasticBlockStore, &out.AWSElasticBlockStore
-		if *in == nil {
-			*out = nil
-		} else {
-			*out = new(AWSElasticBlockStoreVolumeSnapshotSource)
-			**out = **in
-		}
+		*out = new(AWSElasticBlockStoreVolumeSnapshotSource)
+		**out = **in
 	}
 	if in.GCEPersistentDiskSnapshot != nil {
 		in, out := &in.GCEPersistentDiskSnapshot, &out.GCEPersistentDiskSnapshot
-		if *in == nil {
-			*out = nil
-		} else {
-			*out = new(GCEPersistentDiskSnapshotSource)
-			**out = **in
-		}
+		*out = new(GCEPersistentDiskSnapshotSource)
+		**out = **in
 	}
 	if in.CinderSnapshot != nil {
 		in, out := &in.CinderSnapshot, &out.CinderSnapshot
-		if *in == nil {
-			*out = nil
-		} else {
-			*out = new(CinderVolumeSnapshotSource)
-			**out = **in
-		}
+		*out = new(CinderVolumeSnapshotSource)
+		**out = **in
 	}
 	return
 }
@@ -294,21 +274,13 @@ func (in *VolumeSnapshotDataSpec) DeepCopyInto(out *VolumeSnapshotDataSpec) {
 	in.VolumeSnapshotDataSource.DeepCopyInto(&out.VolumeSnapshotDataSource)
 	if in.VolumeSnapshotRef != nil {
 		in, out := &in.VolumeSnapshotRef, &out.VolumeSnapshotRef
-		if *in == nil {
-			*out = nil
-		} else {
-			*out = new(core_v1.ObjectReference)
-			**out = **in
-		}
+		*out = new(corev1.ObjectReference)
+		**out = **in
 	}
 	if in.PersistentVolumeRef != nil {
 		in, out := &in.PersistentVolumeRef, &out.PersistentVolumeRef
-		if *in == nil {
-			*out = nil
-		} else {
-			*out = new(core_v1.ObjectReference)
-			**out = **in
-		}
+		*out = new(corev1.ObjectReference)
+		**out = **in
 	}
 	return
 }

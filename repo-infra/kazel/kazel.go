@@ -32,7 +32,7 @@ import (
 
 	"go/path/filepath"
 
-	bzl "github.com/bazelbuild/buildifier/core"
+	bzl "github.com/bazelbuild/buildifier/build"
 	"github.com/golang/glog"
 )
 
