@@ -22,7 +22,7 @@ reference them.
 package cache
 
 import (
-	crdv1 "github.com/openebs/external-storage/snapshot/pkg/apis/crd/v1"
+	crdv1 "github.com/openebs/external-storage/snapshot/pkg/apis/volumesnapshot/v1"
 )
 
 // MakeSnapshotName makes a full name for a snapshot that includes

@@ -34,7 +34,7 @@ A Volume plugin must provide `RegisterPlugin()` to return plugin struct, `GetPlu
 import (
 	"k8s.io/client-go/pkg/api/v1"
 
-	crdv1 "github.com/openebs/external-storage/snapshot/pkg/apis/crd/v1"
+	crdv1 "github.com/openebs/external-storage/snapshot/pkg/apis/volumesnapshot/v1"
 	"github.com/openebs/external-storage/snapshot/pkg/cloudprovider"
 )
 
